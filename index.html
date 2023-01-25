@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Generator - CodeWord</title>
+    <style>
+        body {
+            width: 100%;
+            height: 100vh   ;
+            margin: 0;
+            padding: 0;
+            background: rgba(0, 0, 0, 0.713);
+        }
+        .container {
+            width: 100%;
+            height: 100%;
+        }
+
+        .container {
+            gap: 15px;
+        }
+
+        .flex {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .left,
+        .right {
+            max-width: 320px;
+            height: 380px;
+            background: rgb(0, 0, 0);
+            border-radius: 6px;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .left input {
+            height: 40px;
+            width: 90%;
+            border-radius: 10px;
+            outline: none;
+            border: 0;
+            padding: 0 5px;
+            font-size: 15px;
+
+        }
+        #name{
+            background:white;
+            box-shadow:inset -2px 2px 15px rgba(0, 0, 0,.6),
+                        inset 2px -2px 15px rgba(0, 0, 0,.6);
+        }
+
+        .qr-style {
+            width: 90%;
+        }
+
+        .qr-style-col {
+            width: 100%;
+            display: flex;
+            height: 30px;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .qr-style-title {
+            height: 30px;
+            width: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .logo {
+            height: 130px;
+        }
+
+        .logo img {
+            height: 100%;
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        .left select {
+            text-align: center;
+            height: 30px;
+            width: 50%;
+            outline: none;
+            border: 0;
+            border-radius: 10px;
+            margin: 0 7px;
+            color:rgb(45, 45, 45);
+        }
+
+        #submit {
+            background: rgb(143, 255, 143);
+        }
+
+        input,
+        select {
+            background: rgb(197, 255, 197);
+        }
+
+        #submit:active,
+        select:active,
+        #name:active,
+        a:active {
+            transform: scale(1.01);
+        }
+
+        .qr-img {
+            height: calc(90% - 80px);
+            width: 90%;
+            background: rgba(255, 255, 255, 0.915);
+        }
+
+        a {
+            width: 90%;
+            height: 40px;
+            background: white;
+            border-radius: 5px;
+            font-size: 18px;
+            text-decoration: none;
+        }
+
+        a img {
+            width: 30px;
+            margin: 0 10px;
+
+        }
+
+        .right {
+            width: 0;
+            overflow: hidden;
+        }
+
+
+        @media screen and (max-width:700px) {
+            .container {
+                flex-direction: column;
+                padding: 20px 0;
+                height: fit-content;
+                overflow: auto;
+            }
+
+            .left,
+            .right {
+                max-width: 90%;
+            }
+        }
+
+        @media screen and (max-width:300px) {
+            .left {
+                width: 100%;
+                height: 220px;
+            }
+            .right{
+                height: fit-content;
+                padding:10px 0;
+            }
+
+            #name {
+                padding: 0 2px;
+            }
+
+            .logo,
+            .qr-style-title {
+                display: none;
+            }
+
+            .qr-style-col select {
+                width: 100%;
+            }
+
+            #qr{
+                width:100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container flex">
+        <div class="left flex">
+            <input type="text" name="name" id="name" placeholder="Enter Name Or Link Of Organisation" value="CodeWord">
+            <div class="qr-style">
+                <div class="qr-style-col">
+                    <div class="qr-style-title">Select Color</div>
+                    <select id="qr-color">
+                        <option value="430000">Color</option>
+                        <option value="ff0000">Red</option>
+                        <option value="00ff00">Green</option>
+                        <option value="0000ff">Blue</option>
+                        <option value="ffffff">White</option>
+                        <option value="000000">Black</option>
+                    </select>
+                </div>
+
+                <div class="qr-style-col">
+                    <div class="qr-style-title">Select Background</div>
+                    <select id="qr-bgcolor">
+                        <option value="dfc9d0">Background</option>
+                        <option value="ff0000">Red</option>
+                        <option value="00ff00">Green</option>
+                        <option value="0000ff">Blue</option>
+                        <option value="ffffff">White</option>
+                        <option value="000000">Black</option>
+                    </select>
+                </div>
+                <div class="logo">
+                    <img src="https://images2.imgbox.com/7e/b5/x7w87dLm_o.png" alt="">
+                </div>
+            </div>
+            <input type="button" value="Generate QR" id="submit" onClick="createQr()">
+        </div>
+        <div class="right flex">
+            <div class="qr-img flex">
+                <img src="" id="qr" />
+
+
+            </div>
+            <a id="refer" href="" class="flex" target="_blank">
+                <img src="https://images2.imgbox.com/7a/47/XvoIRsbA_o.png"> Open In New Tab
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function createQr() {
+            // fetch(`https://api.qrserver.com/v1/create-qr-code/?color=${color}&bgcolor=${bgcolor}&size=150x150&data=${name}`)
+            let color = document.getElementById("qr-color")
+            let bgColor = document.getElementById("qr-bgcolor")
+            let name = document.getElementById("name")
+            let qrBox = document.querySelector(".right")
+            let qr = document.getElementById("qr")
+            let refer = document.getElementById("refer")
+            let url = `https://api.qrserver.com/v1/create-qr-code/?color=${color.value}&bgcolor=${bgColor.value}&size=150x150&data=${name.value}`
+
+            qrBox.style.width = "100%"
+            qrBox.style.transition = "2s"
+            fetch(url)
+                .then(res => res)
+                .then(data => {
+                    return qr.src = data.url,
+                        refer.href = data.url
+                }
+
+
+                )
+
+        }
+    </script>
+</body>
+
+</html>
